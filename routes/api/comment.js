@@ -1,11 +1,11 @@
 const router = require('express').Router();
-const { Comment } = require('../../models');
+const { comment } = require('./mods');
 
 
 
 // Get all
 router.get('/', (req, res) => {
-    Comment.findAll({
+    comment.findAll({
         attributes: ['id', 'comment_text', 'user_id', 'post_id', 'created_at']
     }).then(dbCommentData=> res.json(dbCommentData))
     .catch(err => {
@@ -16,7 +16,7 @@ router.get('/', (req, res) => {
 
 // create
 router.post('/', (req, res) => {
-    Comment.create({
+    comment.create({
         comment_text: req.body.comment_text,
         user_id: req.body.user_id,
         post_id: req.body.post_id
@@ -29,7 +29,7 @@ router.post('/', (req, res) => {
 
 // delete or "destroy"
 router.delete('/:id', (req, res) => {
-    Comment.destroy({
+    comment.destroy({
         where: {
             id: req.params.id
         },

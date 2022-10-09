@@ -1,10 +1,10 @@
 const router= require('express').Router();
-const { User, Post, Vote, Comment }= require('../../models');
+const { user, post, vote, comment }= require('./mods');
 
 
 // get all 
 router.get('/', (req, res) => {
-    User.findAll({
+    user.findAll({
         // attributes: { exclude: ['password'] }
     })
     .then(dbUserData=> res.json(dbUserData))
@@ -16,25 +16,25 @@ router.get('/', (req, res) => {
 
 // get one user
 router.get('/:id', (req, res) => {
-    User.findOne({
+    user.findOne({
         attributes: { exclude: ['password'] },
         include: [
             {
-                model: Post,
+                model: post,
                 attributes: ['id','title', 'post_url', 'created_at']
             },
             {
-                model: Comment,
+                model: comment,
                 attributes: ['id', 'comment_text', 'created_at'],
                 include: {
-                    model: Post,
+                    model: post,
                     attributes: ['title']
                 }
             },
             {
-                model: Post,
+                model: post,
                 attributes: ['title'],
-                through: Vote,
+                through: vote,
                 as: 'voted_posts'
             }
         ],
@@ -57,7 +57,7 @@ router.get('/:id', (req, res) => {
 
 // create
 router.post('/', (req, res) => {
-    User.create({
+    user.create({
         username: req.body.username,
         email: req.body.email,
         password: req.body.password
@@ -70,7 +70,7 @@ router.post('/', (req, res) => {
 });
 
 router.post('/login', (req, res) => {
-    User.findOne({
+    user.findOne({
         where: {
             email: req.body.email
         }
@@ -90,7 +90,7 @@ router.post('/login', (req, res) => {
 });
 
 router.put('/:id', (req, res) => {
-    User.update(req.body, {
+    user.update(req.body, {
         individualHooks: true,
         where: {
         id: req.params.id
@@ -111,7 +111,7 @@ router.put('/:id', (req, res) => {
 
 // delete or destroy
 router.delete('/:id', (req, res) => {
-    User.destroy({
+    user.destroy({
         where: {
             id: req.params.id
         }
